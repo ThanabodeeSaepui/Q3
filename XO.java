@@ -10,6 +10,7 @@ public class XO extends JFrame implements MouseListener{
     private int turnCount;
     private String player[] = new String[2];
     private String boardArray[][] = new String[size][size];
+    String game_mode = "Play";
     JPanel screen = new JPanel();
     public XO() {
         this.turnCount = 0;
@@ -105,13 +106,15 @@ public class XO extends JFrame implements MouseListener{
     }
     @Override
     public void mouseReleased(MouseEvent e) {
-        int x = e.getX()/200;
-        int y = e.getY()/200;
-        System.out.println("clicked");
-        System.out.println(x);
-        System.out.println(y);
-        addPosition(x, y);
-        displayBoard();
+        if (checkWinner()[0]) {
+            game_mode = "Win";
+        }
+        else {
+            int x = e.getX()/200;
+            int y = e.getY()/200;
+            addPosition(x, y);
+            // displayBoard();
+        }
         this.repaint();
     }
     @Override
@@ -138,9 +141,29 @@ public class XO extends JFrame implements MouseListener{
             }
         }
     }
+    void Draw_win(){
+        Graphics2D g2d = (Graphics2D) screen.getGraphics();
+        g2d.setColor(Color.ORANGE);
+        g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
+        if (checkWinner()[1]) {
+            g2d.drawString("Draw",150,325);
+        } else {
+            String winner = getPlayer()[1];
+            g2d.drawString(winner + " is winner",80,350);
+        }
+    }
     public void paint(Graphics g){
         super.paint(g);
-        Draw_game();
+        switch (game_mode) {
+            case "Play":
+                Draw_game();
+                break;
+            case "Win":
+                Draw_win();
+                break;
+            default:
+                break;
+        }
     }
     public static void main(String[] args) {
         new XO();
