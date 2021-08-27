@@ -77,7 +77,7 @@ public class XO {
             }
         }
         // Draw check
-        if (this.turnCount == 9) {
+        if (this.turnCount == (size*size)) {
             ans[0] = true;
             ans[1] = true;
         }
