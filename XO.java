@@ -1,7 +1,7 @@
 import java.io.Console;
 import java.util.Arrays;
 public class XO {
-    final int size = 3;
+    final int size = 4;
     private int turnCount;
     private char player[] = new char[2];
     private char boardArray[][] = new char[size][size];
@@ -19,8 +19,8 @@ public class XO {
         Console console = System.console();
         String consoleInput = console.readLine();
         int pos = Integer.parseInt(consoleInput);
-        int x = (pos-1)%3;
-        int y = (pos-1)/3;
+        int x = (pos-1)%size;
+        int y = (pos-1)/size;
         if (this.boardArray[y][x] == ' ') {
             this.boardArray[y][x] = this.player[0];
             this.turnCount++;
@@ -46,23 +46,23 @@ public class XO {
     public boolean[] checkWinner() {
         boolean[] ans = {false,false};
         final char condition[] = new char[size];
-        char checkList[][] = new char[8][size];
+        char checkList[][] = new char[size*2+2][size];
         for (int i = 0;i < size;i++) {
             condition[i] = this.player[1]; // condition = {'x','x','x'}
         }
         for (int i = 0;i < (size*2+2);i++) {
-            if (i < size) { // i = {0,1,2}
+            if (i < size) { // i = {0,1,2,3}
                 checkList[i] = this.boardArray[i];
-            } else if (i < (size*2)) { // i = {3,4,5}
+            } else if (i < (size*2)) { // i = {4,5,6,7}
                 for (int j = 0;j < size;j++) {
-                    checkList[i][j] = this.boardArray[j][i-3];
+                    checkList[i][j] = this.boardArray[j][i-size];
                     // System.out.printf("i:%d ,j:%d ,check:%s\n",i,j,checkList[i][j]);
                 }
-            } else if (i < (size*2+1)){ // i = 6
+            } else if (i < (size*2+1)){ // i = 8
                 for (int j = 0;j < size;j++){
                     checkList[i][j] = this.boardArray[j][j];
                 }
-            } else { // i = 7
+            } else { // i = 9
                 for (int j = 0;j < size;j++){
                     checkList[i][j] = this.boardArray[j][(size-1)-j];
                 }
