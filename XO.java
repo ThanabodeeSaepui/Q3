@@ -1,10 +1,13 @@
 import java.io.Console;
 import java.util.Arrays;
-public class XO {
-    final int size = 4;
+import java.awt.*;
+import javax.swing.*;
+public class XO extends JFrame{
+    final int size = 3;
     private int turnCount;
     private char player[] = new char[2];
     private char boardArray[][] = new char[size][size];
+    JPanel screen = new JPanel();
     public XO() {
         this.turnCount = 0;
         this.player[0] = 'X';
@@ -14,6 +17,16 @@ public class XO {
                 this.boardArray[i][j] = ' ';
             }
         }
+        // GUI 
+        this.setTitle("XO Game");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+        this.setResizable(false);
+
+        screen.setPreferredSize(new Dimension(600, 600));
+        this.add(screen);
+        this.pack();
+        this.setVisible(true);
+
     }
     public void addPosition() {
         Console console = System.console();
@@ -86,14 +99,31 @@ public class XO {
     public char[] getPlayer(){
         return this.player;
     }
+    public void paint(Graphics g) {
+        super.paint(g);
+        screen.removeAll();
+        Graphics2D g2d = (Graphics2D) screen.getGraphics();
+        g2d.setStroke(new BasicStroke(2));
+        for (int i=0;i<size;i++) {
+            g2d.setColor(Color.black);
+            g2d.drawLine(0, i*(600/size), 600, i*(600/size));
+        }
+    }
     public static void main(String[] args) {
         XO game = new XO();
         game.displayBoard();
-
+        // GUI
+        JFrame frame = new JFrame();
+        JPanel screen = new JPanel();
+        screen.setPreferredSize(new Dimension(600, 600));
+        frame.add(screen);
+        frame.pack();
+        frame.setVisible(true);
         while (!game.checkWinner()[0]) {
             System.out.printf("%s turn : ",game.getPlayer()[0]);
             game.addPosition();
             game.displayBoard();
+            XO.paint();
         }
         if (game.checkWinner()[1]) {
             System.out.println("Draw");
