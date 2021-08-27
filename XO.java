@@ -1,50 +1,45 @@
-import java.io.Console;
+package Q3;
+
 import java.util.Arrays;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-public class XO extends JFrame{
-    final int size = 3;
+public class XO extends JFrame implements MouseListener{
+    final int size = 4;
+    final int screenSize = 200*size;
     private int turnCount;
-    private char player[] = new char[2];
-    private char boardArray[][] = new char[size][size];
+    private String player[] = new String[2];
+    private String boardArray[][] = new String[size][size];
     JPanel screen = new JPanel();
     public XO() {
         this.turnCount = 0;
-        this.player[0] = 'X';
-        this.player[1] = 'O';
+        this.player[0] = "X";
+        this.player[1] = "O";
         for (int i = 0;i < size;i++){
             for (int j = 0;j < size;j++){
-                this.boardArray[i][j] = ' ';
+                this.boardArray[i][j] = " ";
             }
         }
-        // GUI 
+        // GUI
         this.setTitle("XO Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
         this.setResizable(false);
 
-        screen.setPreferredSize(new Dimension(600, 600));
+        screen.setPreferredSize(new Dimension(screenSize, screenSize));
+        screen.addMouseListener(this);
         this.add(screen);
         this.pack();
         this.setVisible(true);
-
     }
-    public void addPosition() {
-        Console console = System.console();
-        String consoleInput = console.readLine();
-        int pos = Integer.parseInt(consoleInput);
-        int x = (pos-1)%size;
-        int y = (pos-1)/size;
-        if (this.boardArray[y][x] == ' ') {
+    public void addPosition(int x,int y) {
+        if (this.boardArray[y][x] == " ") {
             this.boardArray[y][x] = this.player[0];
             this.turnCount++;
             this.changePlayer();
         }
-        else {
-            System.out.println("Can not put mark on same position");
-        }
     }
     private void changePlayer() {
-        char holder = this.player[0];
+        String holder = this.player[0];
         this.player[0] = this.player[1];
         this.player[1] = holder;
     }
@@ -58,8 +53,8 @@ public class XO extends JFrame{
     }
     public boolean[] checkWinner() {
         boolean[] ans = {false,false};
-        final char condition[] = new char[size];
-        char checkList[][] = new char[size*2+2][size];
+        final String condition[] = new String[size];
+        String checkList[][] = new String[size*2+2][size];
         for (int i = 0;i < size;i++) {
             condition[i] = this.player[1]; // condition = {'x','x','x'}
         }
@@ -96,39 +91,58 @@ public class XO extends JFrame{
         }
         return ans;
     }
-    public char[] getPlayer(){
+    public String[] getPlayer(){
         return this.player;
     }
-    public void paint(Graphics g) {
-        super.paint(g);
+    // ----------------Mouse----------------
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        int x = e.getX()/200;
+        int y = e.getY()/200;
+        System.out.println("clicked");
+        System.out.println(x);
+        System.out.println(y);
+        addPosition(x, y);
+        displayBoard();
+        this.repaint();
+    }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    
+    }
+    @Override
+    public void mouseExited(MouseEvent e) {
+    
+    }
+    void Draw_game(){
         screen.removeAll();
         Graphics2D g2d = (Graphics2D) screen.getGraphics();
         g2d.setStroke(new BasicStroke(2));
-        for (int i=0;i<size;i++) {
+        for (int i=0;i<size;i++){
             g2d.setColor(Color.black);
-            g2d.drawLine(0, i*(600/size), 600, i*(600/size));
+            g2d.drawLine(0, i*200, screenSize, i*200);
+            for (int j=0;j<size;j++){
+                g2d.setColor(Color.black);
+                g2d.drawLine(j*200, 0, j*200, screenSize);
+                g2d.setColor(Color.blue);
+                g2d.setFont(new Font("Calibri", Font.PLAIN, 150));
+                g2d.drawString(boardArray[i][j],60+(200*j),150+(200*i));
+            }
         }
     }
+    public void paint(Graphics g){
+        super.paint(g);
+        Draw_game();
+    }
     public static void main(String[] args) {
-        XO game = new XO();
-        game.displayBoard();
-        // GUI
-        JFrame frame = new JFrame();
-        JPanel screen = new JPanel();
-        screen.setPreferredSize(new Dimension(600, 600));
-        frame.add(screen);
-        frame.pack();
-        frame.setVisible(true);
-        while (!game.checkWinner()[0]) {
-            System.out.printf("%s turn : ",game.getPlayer()[0]);
-            game.addPosition();
-            game.displayBoard();
-            XO.paint();
-        }
-        if (game.checkWinner()[1]) {
-            System.out.println("Draw");
-        } else {
-            System.out.printf("Winner is %s \n", game.getPlayer()[1]);
-        }
+        new XO();
     }
 }
